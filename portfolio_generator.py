@@ -9,7 +9,7 @@ import os
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
-from prompts import portfolio_content_prompt, project_image_suggestions_prompt
+from prompts import portfolio_content_prompt
 
 load_dotenv()
 
@@ -31,7 +31,7 @@ def _get_client():
     return _client
 
 
-def generate_portfolio_content(data: dict, role: str, model: str = None, include_images: bool = False) -> str:
+def generate_portfolio_content(data: dict, role: str, model: str = None) -> str:
     """
     Generate detailed portfolio content for PDF export.
     
@@ -39,7 +39,6 @@ def generate_portfolio_content(data: dict, role: str, model: str = None, include
         data: Student/candidate information
         role: Target job role
         model: Gemini model to use (default: gemini-2.5-flash)
-        include_images: If True, AI will suggest image placeholders (default: False)
     
     Returns:
         Formatted portfolio content text with sections
@@ -52,7 +51,7 @@ def generate_portfolio_content(data: dict, role: str, model: str = None, include
     # Generate main portfolio content with specific instructions to avoid truncation
     response = client.models.generate_content(
         model=model,
-        contents=portfolio_content_prompt(data, role, include_images),
+        contents=portfolio_content_prompt(data, role),
         config=types.GenerateContentConfig(
             temperature=0.35,  # More stable for complete generation
             max_output_tokens=8000,  # Increased from 6000 to ensure completion
@@ -71,7 +70,7 @@ def generate_portfolio_content(data: dict, role: str, model: str = None, include
         # Try once more with even more tokens
         response = client.models.generate_content(
             model=model,
-            contents=portfolio_content_prompt(data, role, include_images),
+            contents=portfolio_content_prompt(data, role),
             config=types.GenerateContentConfig(
                 temperature=0.3,
                 max_output_tokens=10000,

@@ -91,23 +91,23 @@ def full_resume_prompt(
     exp_section = ""
     if data.get('experience', '').strip():
         exp_section = f"""
-PROFESSIONAL EXPERIENCE
-{data['experience'].strip()}
-"""
+            PROFESSIONAL EXPERIENCE
+            {data['experience'].strip()}
+        """
 
     cert_section = ""
     if data.get('certifications', '').strip():
         cert_section = f"""
-CERTIFICATIONS
-{data['certifications'].strip()}
-"""
+            CERTIFICATIONS
+            {data['certifications'].strip()}
+        """
 
     ach_section = ""
     if data.get('achievements', '').strip():
         ach_section = f"""
-ACHIEVEMENTS
-{data['achievements'].strip()}
-"""
+            ACHIEVEMENTS
+            {data['achievements'].strip()}
+        """
 
     return f"""
 Generate a COMPLETE one-page ATS resume for: {role}
@@ -137,14 +137,13 @@ PROJECTS
 
 {exp_section}
 
-EDUCATION
-{data['education']}
 
-CERTIFICATIONS
 {cert_section}
 
-ACHIEVEMENTS
 {ach_section}
+
+EDUCATION
+{data['education']}
 
 FORMATTING:
 - Section headers in ALL CAPS
@@ -152,7 +151,7 @@ FORMATTING:
 - One line per bullet
 - Be concise but COMPLETE
 
-Generate the FULL resume. Do NOT stop early.
+Generate the FULL resume. Stop after ACHIEVEMENTS section.
 Return formatted text only.
 """
 
