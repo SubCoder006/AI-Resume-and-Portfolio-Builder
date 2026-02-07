@@ -95,7 +95,7 @@ def _output_card_resume(text: str):
     st.markdown(f"""
     <div class="output-card">
       <div class="output-label">One-Page ATS Resume (Preview)</div>
-      <div class="output-text" style="font-family: 'Courier New', monospace; font-size: 0.85rem; line-height: 1.5;">
+      <div class="output-text" style="font-family: 'Courier New', monospace; color: black; font-size: 0.85rem; line-height: 1.5;">
         {formatted}
       </div>
     </div>
