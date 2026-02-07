@@ -140,8 +140,10 @@ PROJECTS
 EDUCATION
 {data['education']}
 
+CERTIFICATIONS
 {cert_section}
 
+ACHIEVEMENTS
 {ach_section}
 
 FORMATTING:

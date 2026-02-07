@@ -80,31 +80,3 @@ def generate_portfolio_content(data: dict, role: str, model: str = None, include
         result = response.text.strip()
     
     return result
-
-
-def generate_project_image_suggestions(project_description: str, model: str = None) -> str:
-    """
-    Generate AI suggestions for what images/screenshots would showcase a project.
-    
-    Args:
-        project_description: Description of a single project
-        model: Gemini model to use
-    
-    Returns:
-        Image placeholder suggestions
-    """
-    if model is None:
-        model = DEFAULT_MODEL
-    
-    client = _get_client()
-    
-    response = client.models.generate_content(
-        model=model,
-        contents=project_image_suggestions_prompt(project_description),
-        config=types.GenerateContentConfig(
-            temperature=0.3,
-            max_output_tokens=500,
-        ),
-    )
-    
-    return response.text.strip()
