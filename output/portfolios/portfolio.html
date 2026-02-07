@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        :root {
+            --primary-color: #6C63FF; /* A vibrant purple/blue */
+            --secondary-color: #0F0F0F; /* Dark background */
+            --accent-color: #FFD700; /* Gold for highlights */
+            --text-color: #E0E0E0; /* Light grey for body text */
+            --heading-color: #FFFFFF; /* White for headings */
+            --bg-dark: #1A1A1A; /* Slightly lighter dark for sections */
+            --bg-light: #2C2C2C; /* Even lighter dark for cards/elements */
+            --border-color: rgba(255, 255, 255, 0.1); /* Subtle border */
+            --font-heading: 'Poppins', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --transition-speed: 0.3s ease-in-out;
+            --border-radius: 8px;
+            --spacing-unit: 1rem;
+        }
+
+        /* Universal Box-Sizing */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Body Styles */
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Headings */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            color: var(--heading-color);
+            margin-bottom: var(--spacing-unit);
+            line-height: 1.2;
+        }
+
+        h1 { font-size: 3.5rem; font-weight: 800; }
+        h2 { font-size: 2.8rem; font-weight: 700; }
+        h3 { font-size: 2.2rem; font-weight: 600; }
+        h4 { font-size: 1.8rem; font-weight: 600; }
+        h5 { font-size: 1.4rem; font-weight: 500; }
+        h6 { font-size: 1.1rem; font-weight: 500; }
+
+        /* Paragraphs */
+        p {
+            margin-bottom: var(--spacing-unit);
+        }
+
+        /* Links */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        a:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        /* Buttons */
+        button, .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: var(--heading-color);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-speed), transform var(--transition-speed);
+            text-decoration: none; /* For .btn acting as a link */
+        }
+
+        button:hover, .btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: var(--heading-color);
+            border-color: var(--primary-color);
+        }
+
+        /* Utility Classes */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flex-between {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-left {
+            text-align: left;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .section-padding {
+            padding: 6rem 0;
+        }
+
+        .card {
+            background-color: var(--bg-dark);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Form Elements */
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: var(--spacing-unit);
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color var(--transition-speed);
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Icons */
+        .icon {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .social-icons a {
+            font-size: 1.8rem;
+            margin: 0 0.7rem;
+            color: var(--text-color);
+            transition: color var(--transition-speed);
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            h3 { font-size: 1.7rem; }
+            .section-padding {
+                padding: 4rem 0;
+            }
+            .grid-cols-2, .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.8rem; }
+            .container {
+                padding: 0 1rem;
+            }
+            button, .btn {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header id="hero">
+    <h1>Subayan Ghosh</h1>
+    <p>AI / ML Engineer</p>
+    <a href="#projects" class="button">View My Work</a>
+</header>
+
+<nav>
+    <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<section id="about">
+    <h2>About Me</h2>
+    <p>An aspiring AI / ML Engineer currently pursuing a B.Tech in Electronics and Communication Engineering. Passionate about developing intelligent systems and leveraging machine learning to solve real-world problems. Experienced in full-stack development, data analysis, and cloud deployment, with a strong foundation in core computer science concepts.</p>
+</section>
+
+<section id="skills">
+    <h2>Skills</h2>
+    <div class="skill-category">
+        <h3>Programming Languages</h3>
+        <ul>
+            <li>C++</li>
+            <li>Python</li>
+            <li>JavaScript</li>
+            <li>SQL</li>
+        </ul>
+    </div>
+    <div class="skill-category">
+        <h3>Frameworks/Libraries</h3>
+        <ul>
+            <li>React</li>
+            <li>Node.js</li>
+            <li>Express</li>
+            <li>Django</li>
+            <li>TensorFlow</li>
+        </ul>
+    </div>
+    <div class="skill-category">
+        <h3>Tools</h3>
+        <ul>
+            <li>Git</li>
+            <li>Docker</li>
+            <li>Linux</li>
+            <li>AWS</li>
+            <li>Postman</li>
+        </ul>
+    </div>
+    <div class="skill-category">
+        <h3>Databases</h3>
+        <ul>
+            <li>MySQL</li>
+            <li>MongoDB</li>
+            <li>PostgreSQL</li>
+        </ul>
+    </div>
+    <div class="skill-category">
+        <h3>Core Concepts</h3>
+        <ul>
+            <li>Data Structures</li>
+            <li>Algorithms</li>
+            <li>OOP</li>
+            <li>REST APIs</li>
+            <li>System Design</li>
+        </ul>
+    </div>
+</section>
+
+<section id="projects">
+    <h2>Projects</h2>
+    <article class="project-item">
+        <h3>AI Resume Builder</h3>
+        <p><strong>Technologies:</strong> Python, Streamlit, OpenAI API</p>
+        <p>Built an automated resume generator used by 1000+ students.</p>
+    </article>
+    <article class="project-item">
+        <h3>Smart Attendance System</h3>
+        <p><strong>Technologies:</strong> React, Node.js, MongoDB</p>
+        <p>Face-recognition based attendance with 95% accuracy.</p>
+    </article>
+    <article class="project-item">
+        <h3>E-commerce Web App</h3>
+        <p><strong>Technologies:</strong> MERN Stack</p>
+        <p>Full-stack shopping platform with payments & admin dashboard.</p>
+    </article>
+    <article class="project-item">
+        <h3>Weather Analytics Dashboard</h3>
+        <p><strong>Technologies:</strong> Python, Flask, Chart.js</p>
+        <p>Real-time visualization of weather API data.</p>
+    </article>
+</section>
+
+<section id="experience">
+    <h2>Experience</h2>
+    <article class="experience-item">
+        <h3>Software Engineering Intern | ABC Technologies</h3>
+        <p>May 2024 – Jul 2024</p>
+        <ul>
+            <li>Developed REST APIs using Django and PostgreSQL</li>
+            <li>Reduced query latency by 35% through indexing and caching</li>
+            <li>Deployed services using Docker on AWS EC2</li>
+        </ul>
+    </article>
+    <article class="experience-item">
+        <h3>Frontend Developer Intern | StartupHub</h3>
+        <p>Dec 2023 – Feb 2024</p>
+        <ul>
+            <li>Built responsive UI with React and Tailwind</li>
+            <li>Improved page load speed by 40%</li>
+        </ul>
+    </article>
+</section>
+
+<section id="education">
+    <h2>Education</h2>
+    <article class="education-item">
+        <h3>B.Tech in Electronics and Communication Engineering</h3>
+        <p>National Institute of Technology Durgapur | 2022–2026</p>
+        <p>CGPA: 8.72/10</p>
+    </article>
+</section>
+
+<section id="certifications">
+    <h2>Certifications</h2>
+    <ul>
+        <li>AWS Cloud Practitioner | Amazon Web Services | 2024</li>
+        <li>Machine Learning Specialization | Coursera (Andrew Ng) | 2023</li>
+        <li>Google Data Analytics Certificate | Google | 2023</li>
+    </ul>
+</section>
+
+<section id="achievements">
+    <h2>Achievements</h2>
+    <ul>
+        <li>1st Place – Smart India Hackathon 2024</li>
+        <li>Technical Lead – Coding Club (2023–2025)</li>
+        <li>Top 5% Rank – CodeChef Global Starters</li>
+        <li>Organized 5+ technical workshops for 300+ students</li>
+    </ul>
+</section>
+
+<section id="contact">
+    <h2>Contact Me</h2>
+    <p>Email: <a href="mailto:subayanghosh1804@gmail.com">subayanghosh1804@gmail.com</a></p>
+    <p>Phone: <a href="tel:+918900790117">+918900790117</a></p>
+    <p>Location: Bardhaman</p>
+    <p>LinkedIn: <a href="https://linkedin.com/in/arjun-verma-ecedev" target="_blank" rel="noopener noreferrer">linkedin.com/in/arjun-verma-ecedev</a></p>
+    <p>GitHub: <a href="https://github.com/arjunverma-dev" target="_blank" rel="noopener noreferrer">github.com/arjunverma-dev</a></p>
+</section>
+
+<footer>
+    <p>&copy; 2024 Subayan Ghosh. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

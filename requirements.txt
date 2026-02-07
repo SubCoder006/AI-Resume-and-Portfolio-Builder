@@ -1,0 +1,15 @@
+
+# Streamlit frontend
+streamlit>=1.30.0
+
+# AI generation
+google-generativeai>=0.8.0
+
+# Utilities
+python-dotenv>=1.0.0
+fpdf2>=2.7.0
+
+# FastAPI backend (optional - only needed if running the API server)
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic[email]>=2.0.0
