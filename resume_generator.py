@@ -142,10 +142,11 @@ PROFESSIONAL SUMMARY
 ==================================================
 CORE SKILLS
 ==================================================
-Group skills clearly into:
+Intelligently group the following skills by category:
 - Programming Languages
 - Frameworks & Libraries
 - Tools & Platforms
+- Other relevant categories
 
 Use only the skills below:
 {data['skills']}
