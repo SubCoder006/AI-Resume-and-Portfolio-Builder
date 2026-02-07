@@ -2,6 +2,8 @@
 Portfolio PDF generator - detailed, multi-page showcase.
 
 Generates comprehensive portfolio PDF with:
+- Headers: Bold, 18pt  
+- Content: Regular, 12pt
 - Detailed project descriptions
 - Professional layout with larger fonts
 - Multi-page support for complete work showcase
@@ -151,24 +153,6 @@ def generate_portfolio_pdf(
             pdf.set_text_color(0, 0, 0)
             pdf.multi_cell(usable_width, 6, stripped)
             pdf.ln(2)
-            continue
-        
-        # Handle image placeholders/markers - ONLY if enabled
-        if "[" in stripped and "Image" in stripped and "]" in stripped:
-            if include_image_placeholders:
-                # Add placeholder box
-                pdf.ln(3)
-                pdf.set_fill_color(240, 240, 240)
-                pdf.set_draw_color(180, 180, 180)
-                pdf.set_font("DejaVu", "I", 9)
-                pdf.set_text_color(100, 100, 100)
-                
-                # Create placeholder box
-                pdf.rect(15, pdf.get_y(), usable_width, 40, "DF")
-                pdf.set_y(pdf.get_y() + 15)
-                pdf.cell(usable_width, 10, stripped, align="C")
-                pdf.ln(30)
-            # If not including placeholders, skip the line entirely
             continue
         
         # Detect bullet points
