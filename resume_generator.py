@@ -151,7 +151,7 @@ FORMATTING:
 - One line per bullet
 - Be concise but COMPLETE
 
-Generate the FULL resume. Stop after ACHIEVEMENTS section.
+Generate the FULL resume. Do not stop until EDUCATION section is complete.
 Return formatted text only.
 """
 
