@@ -2,6 +2,7 @@
 AI-powered portfolio content generation using Google Gemini.
 
 Generates detailed portfolio text content (not HTML) for PDF export.
+Fixed: Ensures complete generation without truncation.
 """
 
 import os
@@ -33,14 +34,12 @@ def _get_client():
 def generate_portfolio_content(data: dict, role: str, model: str = None, include_images: bool = False) -> str:
     """
     Generate detailed portfolio content for PDF export.
-    Give a brief professional summary in about 5-6 lines.
-    Explain AI generated project use with proper description 4-5 lines each .
-
     
     Args:
         data: Student/candidate information
         role: Target job role
         model: Gemini model to use (default: gemini-2.5-flash)
+        include_images: If True, AI will suggest image placeholders (default: False)
     
     Returns:
         Formatted portfolio content text with sections
@@ -50,17 +49,37 @@ def generate_portfolio_content(data: dict, role: str, model: str = None, include
     
     client = _get_client()
     
-    # Generate main portfolio content
+    # Generate main portfolio content with specific instructions to avoid truncation
     response = client.models.generate_content(
         model=model,
         contents=portfolio_content_prompt(data, role, include_images),
         config=types.GenerateContentConfig(
-            temperature=0.4,  # Slightly creative for engaging content
-            max_output_tokens=6000,  # Allow detailed descriptions
+            temperature=0.35,  # More stable for complete generation
+            max_output_tokens=8000,  # Increased from 6000 to ensure completion
+            stop_sequences=None,  # Don't stop early
         ),
     )
     
-    return response.text.strip()
+    result = response.text.strip()
+    
+    # Validation: Check for truncation indicators
+    truncation_indicators = ["...", " trad", " pro", "The trad", "This pro"]
+    has_truncation = any(indicator in result for indicator in truncation_indicators)
+    
+    if has_truncation:
+        print("Warning: Portfolio content may be truncated. Regenerating...")
+        # Try once more with even more tokens
+        response = client.models.generate_content(
+            model=model,
+            contents=portfolio_content_prompt(data, role, include_images),
+            config=types.GenerateContentConfig(
+                temperature=0.3,
+                max_output_tokens=10000,
+            ),
+        )
+        result = response.text.strip()
+    
+    return result
 
 
 def generate_project_image_suggestions(project_description: str, model: str = None) -> str:

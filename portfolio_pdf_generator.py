@@ -3,7 +3,6 @@ Portfolio PDF generator - detailed, multi-page showcase.
 
 Generates comprehensive portfolio PDF with:
 - Detailed project descriptions
-- Image placeholders for screenshots/diagrams
 - Professional layout with larger fonts
 - Multi-page support for complete work showcase
 """
@@ -37,14 +36,18 @@ def _find_dejavu() -> str:
         pathlib.Path("/usr/share/fonts/TTF/DejaVuSans.ttf"),
         pathlib.Path.home() / "anaconda3" / "Library" / "Fonts" / "DejaVuSans.ttf",
         pathlib.Path("C:/Windows/Fonts/DejaVuSans.ttf"),
-        pathlib.Path("F:\Project\AI Resume and PortFolio Builder\AI_Resume_Portfolio_Builder"),
-
     ]
     for p in candidates:
         if p.exists():
             return str(p)
 
-    raise FileNotFoundError("DejaVuSans.ttf not found. Place in project root.")
+    raise FileNotFoundError(
+        "DejaVuSans.ttf font not found!\n\n"
+        "Please download it from: https://dejavu-fonts.github.io/\n"
+        "Then place it in the same folder as app.py\n\n"
+        f"Searched in these locations:\n" + 
+        "\n".join(f"  - {p}" for p in candidates)
+    )
 
 
 # ---------------------------------------------------------------------------

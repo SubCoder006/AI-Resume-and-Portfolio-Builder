@@ -2,12 +2,7 @@
 AI-powered resume content generation using Google Gemini.
 
 Compatible with google-genai >= 0.3.0
-Uses correct model names that are actually available.
-
-Functions (DO NOT RENAME):
-  - generate_resume_summary
-  - generate_project_bullets
-  - generate_full_resume
+Fixes: Ensures complete generation, no truncation
 """
 
 import os
@@ -17,15 +12,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# -------------------------------------------------------------------
-# Singleton client
-# -------------------------------------------------------------------
 _client = None
-
-AVAILABLE_MODELS = [
-    "gemini-2.5-flash"
-]
-
 DEFAULT_MODEL = "gemini-2.5-flash"
 
 
@@ -39,58 +26,36 @@ def _get_client():
     return _client
 
 
-# -------------------------------------------------------------------
-# PROMPTS
-# -------------------------------------------------------------------
-
 def resume_summary_prompt(data: dict, role: str, job_description: str = None) -> str:
     jd_section = f"\nJob Description:\n{job_description}\n" if job_description else ""
 
     return f"""
-You are a senior recruiter and ATS optimization expert.
+You are an expert ATS resume writer.
 
-TASK: Write a PROFESSIONAL SUMMARY.
+Create a professional summary (2-3 sentences) for: {role}
 
-STRICT RULES:
-- Exactly 1-2 sentences
-- No bullet points
-- No emojis or symbols
-- ATS-safe language
-- Professional and concise
-- Role-specific
-
-Candidate Information:
+Candidate:
 Name: {data['name']}
-Target Role: {role}
-Key Skills: {data['skills']}
+Education: {data['education']}
+Skills: {data['skills']}
 Projects: {data['projects']}
-Experience: {data.get('experience', 'Entry-level / student')}
+
+RULES:
+- Exactly 2-3 complete sentences
+- Mention role: {role}
+- Highlight key technical skills
+- NO truncation or abbreviations
+- Full sentences only
 
 {jd_section}
 
-Return ONLY the summary text.
+Return the complete summary.
 """
 
 
 def project_bullets_prompt(data: dict, role: str) -> str:
     return f"""
-You are a senior technical recruiter.
-
-TASK: Generate ATS-optimized PROJECT DESCRIPTIONS.
-
-STRICT RULES:
-- Plain text only
-- Past tense action verbs
-- 1-2 bullets per project
-- No emojis
-- No special symbols except "-"
-- Concise, impact-focused
-
-REQUIRED FORMAT (EXACT):
-
-Project Name | Technologies Used
-- Bullet point
-- Bullet point
+Generate ATS-optimized project descriptions for: {role}
 
 PROJECT DATA:
 {data['projects']}
@@ -98,10 +63,20 @@ PROJECT DATA:
 SKILLS:
 {data['skills']}
 
-TARGET ROLE:
-{role}
+STRICT RULES:
+- Format: Project Name | Technologies
+- Then 1 bullets per project
+- Each bullet ONE complete sentence
+- Past tense action verbs
+- NO truncation - write full sentences
+- NO abbreviations like "This pro..." or "The trad..."
 
-Return ONLY the formatted project section.
+EXAMPLE:
+E-commerce Platform | React, Node.js, MongoDB
+- Built full-stack web application with secure payment integration serving 500+ users ,(summurise as per new trend)
+
+Generate first 3 projects completely.
+Return formatted text only.
 """
 
 
@@ -112,86 +87,73 @@ def full_resume_prompt(
     project_bullets: str,
     job_description: str = None
 ) -> str:
+    # Build sections conditionally
+    exp_section = ""
+    if data.get('experience', '').strip():
+        exp_section = f"""
+PROFESSIONAL EXPERIENCE
+{data['experience'].strip()}
+"""
+
+    cert_section = ""
+    if data.get('certifications', '').strip():
+        cert_section = f"""
+CERTIFICATIONS
+{data['certifications'].strip()}
+"""
+
+    ach_section = ""
+    if data.get('achievements', '').strip():
+        ach_section = f"""
+ACHIEVEMENTS
+{data['achievements'].strip()}
+"""
+
     return f"""
-You are a senior recruiter generating a COMPLETE, PROFESSIONAL, ATS-OPTIMIZED resume.
+Generate a COMPLETE one-page ATS resume for: {role}
 
-ABSOLUTE RULES (MANDATORY):
-- DO NOT stop early
-- DO NOT summarize
-- DO NOT omit any section
-- ALL section headers MUST appear
-- Plain text only
-- ATS compatible
-- Professional resume tone
-- Resume length: up to 3 pages
+CRITICAL RULES:
+- Write ALL sections COMPLETELY - NO truncation
+- NO abbreviations or "..." ellipsis
+- Use full sentences
+- Complete all sections before stopping
+- Skip only if no data provided
 
-==================================================
-HEADER
-==================================================
+CONTACT
 {data['name']}
 {data['email']} | {data.get('phone', '')} | {data.get('city', '')}
 LinkedIn: {data.get('linkedin', '')}
 GitHub: {data.get('github', '')}
 
-==================================================
 PROFESSIONAL SUMMARY
-==================================================
-{"Keep it exact to the point in 2-3 lines."}
 {summary}
 
-==================================================
 CORE SKILLS
-==================================================
-Intelligently group the following skills by category:
-- Programming Languages
-- Frameworks & Libraries
-- Tools & Platforms
-- Other relevant categories
-
-Use only the skills below:
+Organize these skills by category (Languages, Frameworks, Tools, Databases, Concepts):
 {data['skills']}
 
-==================================================
 PROJECTS
-==================================================
-{"Explain each project in 1-2 lines, try to be precise in short."}
 {project_bullets}
 
-==================================================
-PROFESSIONAL EXPERIENCE
-==================================================
-{"Use the experience provided below. And finish in 1-2 sentence. Try to summarise in 1 line if possible." if data.get("experience") else
-"Convert the most relevant projects above into experience-style bullet points."}
+{exp_section}
 
-{data.get("experience", "")}
-
-==================================================
 EDUCATION
-==================================================
 {data['education']}
 
-==================================================
-CERTIFICATIONS 
-==================================================
-{"One line each,don't over explain keep simple understandable."}
-{data.get("certifications", "")}
+{cert_section}
 
-==================================================
-ACHIEVEMENTS
-==================================================
-{"One line each,don't over explain keep simple understandable."}
-{data.get("achievements", "")}
+{ach_section}
 
+FORMATTING:
+- Section headers in ALL CAPS
+- Bullets start with •
+- One line per bullet
+- Be concise but COMPLETE
 
-FINAL INSTRUCTION:
-End ONLY after the EDUCATION section.
-Do NOT add explanations or notes.
+Generate the FULL resume. Do NOT stop early.
+Return formatted text only.
 """
 
-
-# -------------------------------------------------------------------
-# GENERATORS (FUNCTION NAMES UNCHANGED)
-# -------------------------------------------------------------------
 
 def generate_resume_summary(
     data: dict,
@@ -206,8 +168,8 @@ def generate_resume_summary(
         model=model,
         contents=resume_summary_prompt(data, role, job_description),
         config=types.GenerateContentConfig(
-            temperature=0.35,
-            max_output_tokens=300,
+            temperature=0.3,
+            max_output_tokens=400,
         ),
     )
     return response.text.strip()
@@ -225,8 +187,8 @@ def generate_project_bullets(
         model=model,
         contents=project_bullets_prompt(data, role),
         config=types.GenerateContentConfig(
-            temperature=0.35,
-            max_output_tokens=1000,
+            temperature=0.3,
+            max_output_tokens=1500,
         ),
     )
     return response.text.strip()
@@ -253,8 +215,19 @@ def generate_full_resume(
             job_description,
         ),
         config=types.GenerateContentConfig(
-            temperature=0.25,  # very stable formatting
-            max_output_tokens=3500,
+            temperature=0.2,  # Very stable
+            max_output_tokens=4000,  # Increased for complete generation
+            stop_sequences=None,  # Don't stop early
         ),
     )
-    return response.text.strip()
+    
+    result = response.text.strip()
+    
+    # Validation: Check if resume seems complete
+    required_sections = ["CONTACT", "PROFESSIONAL SUMMARY", "CORE SKILLS", "PROJECTS", "EDUCATION"]
+    missing = [s for s in required_sections if s not in result.upper()]
+    
+    if missing:
+        print(f"Warning: Resume may be incomplete. Missing sections: {missing}")
+    
+    return result
