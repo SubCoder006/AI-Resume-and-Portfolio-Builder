@@ -3,7 +3,7 @@ AI Resume & Portfolio Builder — Optimized Version
 
 Features:
 - One-page ATS resume (concise, small fonts)
-- Detailed portfolio PDF (elaborate descriptions with image placeholders)
+- Detailed portfolio PDF (pure text, no images)
 - Clean, modern UI
 
 Run: streamlit run app.py
@@ -204,7 +204,7 @@ else:
             )
         st.markdown('</div>', unsafe_allow_html=True)
 
-# ── Step 4: Portfolio PDF ─────────────────────────────────────────────────
+# ── Step 4: Portfolio PDF (TEXT ONLY) ─────────────────────────────────────
 st.markdown('<div class="section-divider"></div>', unsafe_allow_html=True)
 
 st.markdown("""
@@ -213,7 +213,7 @@ st.markdown("""
     <div class="card-icon">&#128188;</div>
     <div>
       <p class="card-title">Detailed Portfolio PDF</p>
-      <p class="card-subtitle">AI-generated detailed portfolio with comprehensive project descriptions</p>
+      <p class="card-subtitle">AI-generated pure text portfolio with comprehensive project descriptions</p>
     </div>
   </div>
 </div>
@@ -225,16 +225,15 @@ else:
     st.markdown('<div class="btn-primary">', unsafe_allow_html=True)
     if st.button("🎨 Generate Portfolio PDF", use_container_width=True):
         with st.spinner("AI is creating detailed portfolio content…"):
-            # Generate text-only portfolio (no image placeholders)
-            portfolio_content = generate_portfolio_content(student_data, role, include_images=False)
+            # Generate pure text portfolio (no images)
+            portfolio_content = generate_portfolio_content(student_data, role)
             st.session_state["portfolio_content"] = portfolio_content
         
-        with st.spinner("Building portfolio PDF…"):
-            # Generate PDF without image placeholders
+        with st.spinner("Building text-only portfolio PDF…"):
+            # Generate PDF (pure text rendering, no image parameters)
             st.session_state["portfolio_pdf_path"] = generate_portfolio_pdf(
                 portfolio_content,
-                student_data["name"],
-                include_image_placeholders=False
+                student_data["name"]
             )
         
         st.success("✅ Portfolio PDF generated!")
@@ -263,7 +262,7 @@ st.markdown("""
 <div style="text-align: center; color: #718096; font-size: 0.9rem; padding: 1rem;">
     <p>Built with ❤️ using Streamlit and Google Gemini AI</p>
     <p style="font-size: 0.8rem; margin-top: 0.5rem;">
-        Resume: One-page ATS optimized | Portfolio: Detailed multi-page showcase
+        Resume: One-page ATS optimized | Portfolio: Pure text detailed showcase
     </p>
 </div>
 """, unsafe_allow_html=True)

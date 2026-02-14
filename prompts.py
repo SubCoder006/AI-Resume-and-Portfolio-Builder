@@ -1,6 +1,6 @@
 """
-Optimized prompt templates - FIXED VERSION
-Prevents truncation and ensures complete generation
+Optimized prompt templates - ALL SECTIONS MANDATORY
+All sections will be generated even if data is empty
 """
 
 
@@ -17,7 +17,7 @@ Candidate:
 - Projects: {data['projects']}
 
 RULES:
-- 2-3 sentences maximum
+- 2 sentences maximum
 - Mention target role: {role}
 - Highlight 3-4 key technical skills
 - No bullet points
@@ -56,35 +56,7 @@ Return formatted projects ONLY."""
 
 
 def full_resume_prompt(data: dict, role: str, summary: str, project_bullets: str) -> str:
-    """Generate complete ONE-PAGE resume."""
-    
-    # Build conditional sections
-    exp_section = ""
-    if data.get('experience', '').strip():
-        exp_section = f"""
-5. EXPERIENCE
-Format each role as:
-Role | Organization | Duration
-- Bullet 1
-- Bullet 2
-
-Experience data:
-{data['experience']}
-"""
-    
-    cert_section = ""
-    if data.get('certifications', '').strip():
-        cert_section = f"""
-{6 if exp_section else 5}. CERTIFICATIONS (one line each)
-{data['certifications']}
-"""
-    
-    ach_section = ""
-    if data.get('achievements', '').strip():
-        ach_section = f"""
-{7 if exp_section and cert_section else 6 if exp_section or cert_section else 5}. ACHIEVEMENTS (one line each)
-{data['achievements']}
-"""
+    """Generate complete ONE-PAGE resume with ALL SECTIONS MANDATORY."""
     
     return f"""You are an expert ATS resume writer.
 
@@ -93,17 +65,17 @@ Create a STRICTLY ONE-PAGE resume for: {role}
 CRITICAL RULES:
 - ONE PAGE ONLY - be extremely concise
 - Plain text, ATS-safe format
-- No descriptions or explanations
+- ALL SECTIONS ARE MANDATORY - include every section below
+- If no data provided for a section, write "Not provided" or skip gracefully
 - Bullet points must be single line
 - No emojis, icons, or special characters
 - COMPLETE ALL SECTIONS - no truncation
-- NO abbreviations like "This proj..." or incomplete words
 
-REQUIRED SECTIONS:
+REQUIRED SECTIONS (ALL MANDATORY):
 
 1. CONTACT (single line format)
-{data['name']} | {data['email']} | {data.get('phone', '')} | {data.get('city', '')}
-LinkedIn: {data.get('linkedin', '')} | GitHub: {data.get('github', '')}
+{data['name']} | {data['email']} | {data.get('phone', 'Not provided')} | {data.get('city', 'Not provided')}
+LinkedIn: {data.get('linkedin', 'Not provided')} | GitHub: {data.get('github', 'Not provided')}
 
 2. PROFESSIONAL SUMMARY
 {summary}
@@ -121,28 +93,41 @@ Skills: {data['skills']}
 4. PROJECTS
 {project_bullets}
 
-{exp_section}
+5. PROFESSIONAL EXPERIENCE (MANDATORY - include this section)
+{data.get('experience', 'Currently seeking professional opportunities')}
 
-{4 if not exp_section else 6 if not cert_section and not ach_section else 6}. EDUCATION (one line per degree)
+If no experience provided, write:
+"Seeking entry-level opportunities to apply technical skills in a professional environment"
+
+6. EDUCATION (MANDATORY)
 {data['education']}
 
-{cert_section}
+7. CERTIFICATIONS (MANDATORY - include this section)
+{data.get('certifications', 'Currently pursuing relevant certifications')}
 
-{ach_section}
+If no certifications, write:
+"Actively pursuing industry-recognized certifications in [relevant field based on role]"
+
+8. ACHIEVEMENTS (MANDATORY - include this section)
+{data.get('achievements', 'Academic projects and personal development initiatives')}
+
+If no achievements, write:
+"Strong academic performance and continuous learning through online courses and personal projects"
 
 STRICT FORMATTING:
-- Section headers: ALL CAPS or Bold
+- Section headers: ALL CAPS
+- ALL 8 sections MUST appear in resume
+- Use "Not provided" or placeholder text if data is missing
 - Bullets: single line, action verb + impact
 - NO paragraphs except summary
-- Skip sections only if no data
+- NEVER skip any section
 - Prioritize space efficiency
-- COMPLETE all sections
 
-Generate the COMPLETE resume. Return formatted text ONLY."""
+MANDATORY: Generate ALL 8 sections. Return formatted text ONLY."""
 
 
-def portfolio_content_prompt(data: dict, role: str, include_image_suggestions: bool = False) -> str:
-    """Generate DETAILED portfolio content for PDF - FIXED to prevent truncation."""
+def portfolio_content_prompt(data: dict, role: str) -> str:
+    """Generate DETAILED portfolio with ALL SECTIONS MANDATORY."""
     
     return f"""You are a portfolio content specialist.
 
@@ -157,26 +142,29 @@ CRITICAL INSTRUCTIONS:
 - NO incomplete words like "trad" or "pro"  
 - NO ellipsis (...)
 - Write everything out FULLY
+- ALL SECTIONS ARE MANDATORY - include every section below
+- If no data provided, create placeholder content
 - Complete ALL sections before stopping
+- PURE TEXT ONLY - NO image references or placeholders
 
 CANDIDATE DATA:
 Name: {data['name']}
 Email: {data['email']}
-Phone: {data.get('phone', '')}
-Location: {data.get('city', '')}
-LinkedIn: {data.get('linkedin', '')}
-GitHub: {data.get('github', '')}
+Phone: {data.get('phone', 'Available upon request')}
+Location: {data.get('city', 'Location flexible')}
+LinkedIn: {data.get('linkedin', 'Available upon request')}
+GitHub: {data.get('github', 'Available upon request')}
 
 Education: {data['education']}
 Skills: {data['skills']}
 Projects: {data['projects']}
-Experience: {data.get('experience', '')}
-Certifications: {data.get('certifications', '')}
-Achievements: {data.get('achievements', '')}
+Experience: {data.get('experience', 'None provided')}
+Certifications: {data.get('certifications', 'None provided')}
+Achievements: {data.get('achievements', 'None provided')}
 
-REQUIRED SECTIONS (in order):
+REQUIRED SECTIONS (ALL MANDATORY - NEVER SKIP ANY):
 
-1. ABOUT ME
+1. ABOUT ME (MANDATORY)
 Write a professional introduction (4-5 complete paragraphs):
 - Background and education (full paragraph)
 - Technical interests and expertise areas (full paragraph)
@@ -186,7 +174,7 @@ Write a professional introduction (4-5 complete paragraphs):
 
 IMPORTANT: Write COMPLETE paragraphs. Do NOT use abbreviations.
 
-2. TECHNICAL EXPERTISE
+2. TECHNICAL EXPERTISE (MANDATORY)
 Organize skills into detailed categories with explanations:
 - Programming Languages (explain proficiency and use cases)
 - Frameworks & Libraries (describe experience with each)
@@ -194,7 +182,7 @@ Organize skills into detailed categories with explanations:
 - Databases (mention projects using each)
 - Core Concepts & Methodologies (explain understanding)
 
-3. PROJECT SHOWCASE (DETAILED)
+3. PROJECT SHOWCASE (MANDATORY)
 For EACH project, write COMPLETE sections:
 
 Project Title
@@ -223,37 +211,54 @@ Outcomes & Learnings:
 
 ---
 
-4. PROFESSIONAL EXPERIENCE (if provided)
+4. PROFESSIONAL EXPERIENCE (MANDATORY - ALWAYS INCLUDE)
+If experience provided:
 For each role:
 - Position Title | Organization | Duration
-- Overview (3-4 COMPLETE sentences about role)
+- Overview (1-2 COMPLETE sentences about role)
 - Key Achievements:
   • [Achievement 1 with metrics - COMPLETE sentence]
   • [Achievement 2 - technical contribution - COMPLETE]
   • [Achievement 3 - impact - COMPLETE sentence]
 - Technologies & Tools Used: [comprehensive list]
 
-5. EDUCATION & ACADEMIC BACKGROUND
+If NO experience provided, write:
+"Currently seeking professional opportunities to apply technical expertise in {role}. 
+Prepared to contribute strong foundation in [list key skills] to a dynamic team environment.
+Eager to leverage academic projects and self-directed learning in a professional setting."
+
+5. EDUCATION & ACADEMIC BACKGROUND (MANDATORY)
 - Degree details with CGPA (full information)
 - Relevant coursework (if applicable)
 - Academic projects or research (if any)
 - Honors or distinctions (if any)
 
-6. CERTIFICATIONS & CONTINUOUS LEARNING (if provided)
+6. CERTIFICATIONS & CONTINUOUS LEARNING (MANDATORY - ALWAYS INCLUDE)
+If certifications provided:
 For each certification:
 - Certification Name | Issuing Organization | Year
-- Brief description of coverage (2-3 sentences)
-- Relevance to {role} (1-2 sentences)
+- Brief description (1-2 sentences)
 
-7. ACHIEVEMENTS & RECOGNITION (if provided)
+If NO certifications provided, write:
+"Actively pursuing industry-recognized certifications in {role} domain.
+Committed to continuous professional development through online learning platforms
+including Coursera, Udemy, and specialized technical training programs."
+
+7. ACHIEVEMENTS & RECOGNITION (MANDATORY - ALWAYS INCLUDE)
+If achievements provided:
 List with context:
 - Awards (what, when, why significant - COMPLETE sentences)
 - Hackathons (problem solved, rank, team size - FULL details)
 - Leadership roles (organization, responsibilities, impact - COMPLETE)
 - Publications or talks (title, venue, topic - FULL information)
 
-8. CONTACT & LINKS
-Professional contact information with all links
+If NO achievements provided, write:
+"Strong academic performance with consistent dedication to technical skill development.
+Active participant in online coding communities and open-source contribution initiatives.
+Demonstrated problem-solving abilities through personal projects and academic coursework."
+
+8. CONTACT & LINKS (MANDATORY)
+Professional contact information with all available links
 
 FORMATTING RULES:
 - Use clear section headers (ALL CAPS)
@@ -263,42 +268,18 @@ FORMATTING RULES:
 - Use bullet points for lists
 - Use COMPLETE paragraphs for explanations
 - NO abbreviations or incomplete words
+- PURE TEXT - NO image placeholders or references
+- ALL 8 SECTIONS MUST BE PRESENT
 
 FINAL VALIDATION:
 Before finishing, check that:
+- ALL 8 sections are present
 - All sentences are COMPLETE
 - No truncated words or phrases
 - No "..." ellipsis
 - All sections are FULLY written
 - Everything is explained in FULL
+- NO image references
+- Placeholder content used if data is missing
 
-Return complete portfolio content formatted as described."""
-
-
-def project_image_suggestions_prompt(project_data: str) -> str:
-    """Generate AI suggestions for project images/screenshots."""
-    return f"""You are a technical portfolio advisor.
-
-For the following project, suggest what images/screenshots would best showcase the work:
-
-PROJECT:
-{project_data}
-
-Provide 2-3 specific image suggestions in this format:
-
-[Screenshot Suggestion 1: Description]
-Example: [Main Dashboard - showing data visualization with charts and metrics]
-
-[Screenshot Suggestion 2: Description]
-Example: [Architecture Diagram - system components and data flow]
-
-[Screenshot Suggestion 3: Description]
-Example: [Mobile Responsive View - application on different screen sizes]
-
-Focus on:
-- What would visually demonstrate the project's key features
-- Technical architecture or design patterns
-- User interface or user experience highlights
-- Results or output visualization
-
-Return ONLY the image placeholder suggestions."""
+MANDATORY: Include ALL sections. Return complete portfolio content."""

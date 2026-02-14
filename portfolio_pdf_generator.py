@@ -1,12 +1,11 @@
 """
-Portfolio PDF generator - detailed, multi-page showcase.
+Portfolio PDF generator - Pure text only, no images.
 
-Generates comprehensive portfolio PDF with:
-- Headers: Bold, 18pt  
-- Content: Regular, 12pt
-- Detailed project descriptions
-- Professional layout with larger fonts
-- Multi-page support for complete work showcase
+Generates comprehensive text-based portfolio PDF with:
+- Professional layout
+- Larger readable fonts
+- Multi-page support
+- NO images, NO placeholders - text only
 """
 
 import os
@@ -56,7 +55,7 @@ def _find_dejavu() -> str:
 # Portfolio PDF class
 # ---------------------------------------------------------------------------
 class PortfolioPDF(FPDF):
-    """Custom PDF class for portfolio with header/footer."""
+    """Custom PDF class for text-only portfolio with header/footer."""
     
     def __init__(self, candidate_name: str):
         super().__init__()
@@ -79,24 +78,22 @@ class PortfolioPDF(FPDF):
 
 
 # ---------------------------------------------------------------------------
-# Main generator
+# Main generator - Pure text only
 # ---------------------------------------------------------------------------
 def generate_portfolio_pdf(
     portfolio_content: str,
     candidate_name: str,
-    filename: str = "output/portfolios/portfolio.pdf",
-    include_image_placeholders: bool = False,
-    project_images: dict = None
+    filename: str = "output/portfolios/portfolio.pdf"
 ) -> str:
     """
-    Generate detailed portfolio PDF with optional images.
+    Generate detailed text-only portfolio PDF.
+    
+    NO images, NO image placeholders - pure text content only.
     
     Args:
         portfolio_content: Full portfolio text with sections
         candidate_name: Name for header
         filename: Output path
-        include_image_placeholders: If True, add gray boxes for images (default: False)
-        project_images: Optional dict mapping project names to image paths
     
     Returns:
         Absolute path to generated PDF
@@ -132,7 +129,7 @@ def generate_portfolio_pdf(
             pdf.ln(12)
             continue
         
-        # Detect section headers (ALL CAPS or ends with colon)
+        # Detect section headers (ALL CAPS)
         if stripped.isupper() and len(stripped) > 3:
             pdf.ln(6)
             pdf.set_font("DejaVu", "B", 14)
@@ -146,7 +143,7 @@ def generate_portfolio_pdf(
             pdf.ln(4)
             continue
         
-        # Detect subsection headers (Title Case with colon or bold indicators)
+        # Detect subsection headers (ends with colon)
         if stripped.endswith(":") and not stripped.startswith(("-", "*", "•")):
             pdf.ln(3)
             pdf.set_font("DejaVu", "B", 11)

@@ -225,7 +225,7 @@ def generate_full_resume(
     result = response.text.strip()
     
     # Validation: Check if resume seems complete
-    required_sections = ["CONTACT", "PROFESSIONAL SUMMARY", "CORE SKILLS", "PROJECTS", "EDUCATION"]
+    required_sections = ["CONTACT", "PROFESSIONAL SUMMARY", "CORE SKILLS", "PROJECTS", "EDUCATION", "PROFESSIONAL EXPERIENCE", "CERTIFICATIONS", "ACHIEVEMENTS"]
     missing = [s for s in required_sections if s not in result.upper()]
     
     if missing:

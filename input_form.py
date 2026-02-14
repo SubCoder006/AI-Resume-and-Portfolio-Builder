@@ -39,12 +39,12 @@ def student_input_form() -> Optional[dict]:
             name = st.text_input(
                 "Full Name *",
                 value=defaults["name"],
-                placeholder="e.g. Priya Sharma",
+                placeholder="e.g. John Doe",
             )
             email = st.text_input(
                 "Email *",
                 value=defaults["email"],
-                placeholder="e.g. priya@email.com",
+                placeholder="e.g. xyz@email.com",
             )
             linkedin = st.text_input(
                 "LinkedIn URL",
@@ -76,8 +76,8 @@ def student_input_form() -> Optional[dict]:
             "Education Details *",
             value=defaults["education"],
             placeholder=(
-                "B.Tech in Electronics and Communication Engineering\n"
-                "NIT Durgapur | 2024–2028 | CGPA: 8.5/10"
+                "B.Tech in Computer Science Engineering\n"
+                "College Name, Location | 2024-2028 | CGPA : 8.7/10 \n"
             ),
             height=90,
         )
@@ -105,53 +105,52 @@ def student_input_form() -> Optional[dict]:
             "Projects (one per line) *",
             value=defaults["projects"],
             placeholder=(
-                "AI Resume Builder | Python, Streamlit, Gemini API | "
-                "Built an end-to-end resume generation tool\n"
-                "E-commerce App | React, Node.js, MongoDB | "
-                "Developed full-stack platform with 500+ users"
+                "Project Name | Tech Stack | Description\n"
+                "Project A | Python, Flask | Developed a web app for XYZ\n"
+                "Project B | React, Node.js | Created a real-time chat application"
             ),
             height=120,
         )
 
         st.markdown("---")
 
-        # ── EXPERIENCE (optional) ─────────────────────────────────────
-        st.markdown("**Experience** (optional)")
+        # ── EXPERIENCE ─────────────────────────────────────
+        st.markdown("**Experience**")
         experience = st.text_area(
             "Work Experience / Internships",
             value=defaults["experience"],
             placeholder=(
-                "Software Engineering Intern | XYZ Corp | Jun 2023 – Aug 2023\n"
-                "- Developed REST APIs using Django\n"
-                "- Reduced database query time by 30%"
+                "Software Engineering Intern | ABC Company | June 2023 – Aug 2026\n"
+                "- Developed feature X using Y, resulting in Z outcome\n"
+                "Research Assistant | NIT Durgapur | Jan 2023 – May 2025\n"
             ),
             height=100,
         )
 
         st.markdown("---")
 
-        # ── CERTIFICATIONS (optional) ─────────────────────────────────
-        st.markdown("**Certifications** (optional)")
+        # ── CERTIFICATIONS ─────────────────────────────────
+        st.markdown("**Certifications**")
         certifications = st.text_area(
             "Certifications",
             value=defaults["certifications"],
             placeholder=(
-                "AWS Certified Solutions Architect | Amazon Web Services | 2023\n"
-                "Machine Learning Specialization | Coursera | 2022"
+                "AWS Certified Solutions Architect | Amazon Web Services | 2026\n"
+                "Machine Learning Specialization | Coursera | 2025"
             ),
             height=80,
         )
 
         st.markdown("---")
 
-        # ── ACHIEVEMENTS (optional) ───────────────────────────────────
-        st.markdown("**Achievements / Responsibilities** (optional)")
+        # ── ACHIEVEMENTS ───────────────────────────────────
+        st.markdown("**Achievements / Responsibilities**")
         achievements = st.text_area(
             "Achievements, Awards, Leadership",
             value=defaults["achievements"],
             placeholder=(
                 "1st Place - Smart India Hackathon 2023\n"
-                "Technical Lead - College Coding Club (2023–2024)\n"
+                "Technical Lead - College Coding Club (2025–2026)\n"
                 "Published research paper in IEEE conference"
             ),
             height=80,

@@ -1,8 +1,8 @@
 """
 AI-powered portfolio content generation using Google Gemini.
 
-Generates detailed portfolio text content (not HTML) for PDF export.
-Fixed: Ensures complete generation without truncation.
+Generates pure text portfolio content for PDF export.
+NO images, NO image references, NO placeholders - text only.
 """
 
 import os
@@ -33,7 +33,9 @@ def _get_client():
 
 def generate_portfolio_content(data: dict, role: str, model: str = None) -> str:
     """
-    Generate detailed portfolio content for PDF export.
+    Generate detailed pure text portfolio content for PDF export.
+    
+    NO images, NO image placeholders - pure text content only.
     
     Args:
         data: Student/candidate information
@@ -41,20 +43,20 @@ def generate_portfolio_content(data: dict, role: str, model: str = None) -> str:
         model: Gemini model to use (default: gemini-2.5-flash)
     
     Returns:
-        Formatted portfolio content text with sections
+        Formatted text-only portfolio content
     """
     if model is None:
         model = DEFAULT_MODEL
     
     client = _get_client()
     
-    # Generate main portfolio content with specific instructions to avoid truncation
+    # Generate pure text portfolio content
     response = client.models.generate_content(
         model=model,
         contents=portfolio_content_prompt(data, role),
         config=types.GenerateContentConfig(
-            temperature=0.35,  # More stable for complete generation
-            max_output_tokens=8000,  # Increased from 6000 to ensure completion
+            temperature=0.35,  # Stable for complete generation
+            max_output_tokens=10000,  # Ensure full content
             stop_sequences=None,  # Don't stop early
         ),
     )
@@ -73,7 +75,7 @@ def generate_portfolio_content(data: dict, role: str, model: str = None) -> str:
             contents=portfolio_content_prompt(data, role),
             config=types.GenerateContentConfig(
                 temperature=0.3,
-                max_output_tokens=10000,
+                max_output_tokens=20000,
             ),
         )
         result = response.text.strip()
