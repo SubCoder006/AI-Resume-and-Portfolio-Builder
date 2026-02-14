@@ -17,7 +17,7 @@ Candidate:
 - Projects: {data['projects']}
 
 RULES:
-- 2 sentences maximum
+- 2-3 sentences maximum
 - Mention target role: {role}
 - Highlight 3-4 key technical skills
 - No bullet points
@@ -66,7 +66,7 @@ CRITICAL RULES:
 - ONE PAGE ONLY - be extremely concise
 - Plain text, ATS-safe format
 - ALL SECTIONS ARE MANDATORY - include every section below
-- If no data provided for a section, write "Not provided" or skip gracefully
+- If data just put ignore, skip to next section but keep header
 - Bullet points must be single line
 - No emojis, icons, or special characters
 - COMPLETE ALL SECTIONS - no truncation
