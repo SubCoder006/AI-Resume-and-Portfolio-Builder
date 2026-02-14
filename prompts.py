@@ -1,6 +1,6 @@
 """
-Optimized prompt templates - ALL SECTIONS MANDATORY
-All sections will be generated even if data is empty
+Optimized prompt templates - FIXED for clean PDF output
+Prevents formatting issues that cause text to split awkwardly
 """
 
 
@@ -66,7 +66,7 @@ CRITICAL RULES:
 - ONE PAGE ONLY - be extremely concise
 - Plain text, ATS-safe format
 - ALL SECTIONS ARE MANDATORY - include every section below
-- If data just put ignore, skip to next section but keep header
+- If no data provided for a section, write "Not provided" or skip gracefully
 - Bullet points must be single line
 - No emojis, icons, or special characters
 - COMPLETE ALL SECTIONS - no truncation
@@ -127,7 +127,7 @@ MANDATORY: Generate ALL 8 sections. Return formatted text ONLY."""
 
 
 def portfolio_content_prompt(data: dict, role: str) -> str:
-    """Generate DETAILED portfolio with ALL SECTIONS MANDATORY."""
+    """Generate DETAILED portfolio - FIXED formatting to prevent text splits."""
     
     return f"""You are a portfolio content specialist.
 
@@ -143,9 +143,14 @@ CRITICAL INSTRUCTIONS:
 - NO ellipsis (...)
 - Write everything out FULLY
 - ALL SECTIONS ARE MANDATORY - include every section below
-- If no data provided, create placeholder content
 - Complete ALL sections before stopping
-- PURE TEXT ONLY - NO image references or placeholders
+- PURE TEXT ONLY - NO image references
+
+FORMATTING RULES (CRITICAL FOR PDF):
+- ALWAYS write "Technologies Used:" on SAME LINE as the technologies list
+- NEVER put subsection headers on separate line from their content
+- Keep section titles together with their descriptions
+- No orphaned headers
 
 CANDIDATE DATA:
 Name: {data['name']}
@@ -162,7 +167,7 @@ Experience: {data.get('experience', 'None provided')}
 Certifications: {data.get('certifications', 'None provided')}
 Achievements: {data.get('achievements', 'None provided')}
 
-REQUIRED SECTIONS (ALL MANDATORY - NEVER SKIP ANY):
+REQUIRED SECTIONS (ALL MANDATORY):
 
 1. ABOUT ME (MANDATORY)
 Write a professional introduction (4-5 complete paragraphs):
@@ -183,103 +188,106 @@ Organize skills into detailed categories with explanations:
 - Core Concepts & Methodologies (explain understanding)
 
 3. PROJECT SHOWCASE (MANDATORY)
-For EACH project, write COMPLETE sections:
 
-Project Title
-Technologies Used: [list all]
+CRITICAL FORMAT for each project (MUST FOLLOW EXACTLY):
+
+Project Title: [Full project name]
+Technologies Used: [Python, OpenCV, Flask, MongoDB - list ALL on SAME line]
 
 Problem Statement:
-[Write 3-4 COMPLETE sentences describing the problem. NO truncation.]
+[Write 3-4 COMPLETE sentences describing the problem. Start immediately after colon.]
 
 Solution Approach:
-[Write 4-5 COMPLETE sentences explaining the technical approach. Be specific.]
+[Write 4-5 COMPLETE sentences explaining the technical approach. Start immediately.]
 
 Key Features:
 - [Feature 1 - COMPLETE description with technical details]
 - [Feature 2 - COMPLETE description with technical details]
 - [Feature 3 - COMPLETE description with technical details]
-- [Feature 4 if applicable]
 
 Implementation Highlights:
 - [Technical challenge solved - FULL sentence]
 - [Algorithm or design pattern - FULL explanation]
 - [Performance optimization - COMPLETE description]
-- [Scalability consideration - FULL details]
 
 Outcomes & Learnings:
 [Write 3-4 COMPLETE sentences about results, impact, and learning. NO truncation.]
 
 ---
 
-4. PROFESSIONAL EXPERIENCE (MANDATORY - ALWAYS INCLUDE)
-If experience provided:
-For each role:
-- Position Title | Organization | Duration
-- Overview (1-2 COMPLETE sentences about role)
-- Key Achievements:
-  • [Achievement 1 with metrics - COMPLETE sentence]
-  • [Achievement 2 - technical contribution - COMPLETE]
-  • [Achievement 3 - impact - COMPLETE sentence]
-- Technologies & Tools Used: [comprehensive list]
+REPEAT above format for EACH project.
+
+4. PROFESSIONAL EXPERIENCE (MANDATORY)
+
+CRITICAL FORMAT for each role (MUST FOLLOW EXACTLY):
+
+Position Title | Organization | Duration
+
+[Write complete overview paragraph immediately. Do NOT put "Overview:" label. Write 2-3 COMPLETE sentences describing the role, responsibilities, and context. Start the paragraph directly without any header.]
+
+Key Achievements:
+• [Achievement 1 with metrics - COMPLETE sentence]
+• [Achievement 2 - technical contribution - COMPLETE sentence]
+• [Achievement 3 - impact - COMPLETE sentence]
+
+Technologies & Tools Used: [Python, TensorFlow, Docker, AWS - list ALL on same line]
+
+---
+
+REPEAT for each role.
 
 If NO experience provided, write:
-"Currently seeking professional opportunities to apply technical expertise in {role}. 
-Prepared to contribute strong foundation in [list key skills] to a dynamic team environment.
-Eager to leverage academic projects and self-directed learning in a professional setting."
+"Currently seeking professional opportunities to apply technical expertise in {role}. Prepared to contribute strong foundation in [list key skills] to a dynamic team environment. Eager to leverage academic projects and self-directed learning in a professional setting."
 
 5. EDUCATION & ACADEMIC BACKGROUND (MANDATORY)
-- Degree details with CGPA (full information)
-- Relevant coursework (if applicable)
-- Academic projects or research (if any)
-- Honors or distinctions (if any)
 
-6. CERTIFICATIONS & CONTINUOUS LEARNING (MANDATORY - ALWAYS INCLUDE)
-If certifications provided:
-For each certification:
-- Certification Name | Issuing Organization | Year
-- Brief description (1-2 sentences)
+Degree Name
+Institution Name | Years | CGPA
+
+[If relevant coursework exists, list it. Otherwise skip.]
+
+[If academic projects exist, describe them. Otherwise skip.]
+
+[If honors exist, list them. Otherwise skip.]
+
+6. CERTIFICATIONS & CONTINUOUS LEARNING (MANDATORY)
+
+For each certification (CRITICAL FORMAT):
+Certification Name | Issuing Organization | Year
+[Write 1-2 COMPLETE sentences describing what it covers and relevance. Start immediately.]
 
 If NO certifications provided, write:
-"Actively pursuing industry-recognized certifications in {role} domain.
-Committed to continuous professional development through online learning platforms
-including Coursera, Udemy, and specialized technical training programs."
+"Actively pursuing industry-recognized certifications in {role} domain. Committed to continuous professional development through online learning platforms including Coursera, Udemy, and specialized technical training programs."
 
-7. ACHIEVEMENTS & RECOGNITION (MANDATORY - ALWAYS INCLUDE)
-If achievements provided:
-List with context:
-- Awards (what, when, why significant - COMPLETE sentences)
-- Hackathons (problem solved, rank, team size - FULL details)
-- Leadership roles (organization, responsibilities, impact - COMPLETE)
-- Publications or talks (title, venue, topic - FULL information)
+7. ACHIEVEMENTS & RECOGNITION (MANDATORY)
+
+For each achievement (CRITICAL FORMAT):
+Achievement Title:
+[Write 2-3 COMPLETE sentences describing what, when, why significant, team size, impact. Start immediately after colon.]
 
 If NO achievements provided, write:
-"Strong academic performance with consistent dedication to technical skill development.
-Active participant in online coding communities and open-source contribution initiatives.
-Demonstrated problem-solving abilities through personal projects and academic coursework."
+"Strong academic performance with consistent dedication to technical skill development. Active participant in online coding communities and open-source contribution initiatives. Demonstrated problem-solving abilities through personal projects and academic coursework."
 
 8. CONTACT & LINKS (MANDATORY)
-Professional contact information with all available links
 
-FORMATTING RULES:
-- Use clear section headers (ALL CAPS)
-- Use subsection headers (Title Case with colon)
-- Write in professional but engaging tone
-- Be descriptive and detailed
-- Use bullet points for lists
-- Use COMPLETE paragraphs for explanations
-- NO abbreviations or incomplete words
-- PURE TEXT - NO image placeholders or references
-- ALL 8 SECTIONS MUST BE PRESENT
+CRITICAL FORMAT (everything on separate lines):
+Name: {data['name']}
+Email: {data['email']}
+Phone: {data.get('phone', 'Available upon request')}
+Location: {data.get('city', 'Location flexible')}
+LinkedIn: {data.get('linkedin', 'Available upon request')}
+GitHub: {data.get('github', 'Available upon request')}
 
-FINAL VALIDATION:
-Before finishing, check that:
+FINAL VALIDATION CHECKLIST:
+Before finishing, verify:
 - ALL 8 sections are present
+- "Technologies Used:" is on SAME LINE as technology list
+- Overview paragraphs start immediately after role title
+- No orphaned headers or labels
 - All sentences are COMPLETE
 - No truncated words or phrases
 - No "..." ellipsis
-- All sections are FULLY written
 - Everything is explained in FULL
-- NO image references
-- Placeholder content used if data is missing
+- Contact information is COMPLETE on separate lines
 
-MANDATORY: Include ALL sections. Return complete portfolio content."""
+MANDATORY: Include ALL sections with proper formatting. Return complete portfolio content."""

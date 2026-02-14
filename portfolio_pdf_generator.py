@@ -1,11 +1,8 @@
 """
-Portfolio PDF generator - Pure text only, no images.
+Portfolio PDF generator - FIXED page break handling.
 
-Generates comprehensive text-based portfolio PDF with:
-- Professional layout
-- Larger readable fonts
-- Multi-page support
-- NO images, NO placeholders - text only
+Prevents text from being cut off at page boundaries.
+Ensures clean section breaks and proper text flow.
 """
 
 import os
@@ -52,10 +49,10 @@ def _find_dejavu() -> str:
 
 
 # ---------------------------------------------------------------------------
-# Portfolio PDF class
+# Portfolio PDF class with improved page break handling
 # ---------------------------------------------------------------------------
 class PortfolioPDF(FPDF):
-    """Custom PDF class for text-only portfolio with header/footer."""
+    """Custom PDF class for text-only portfolio with smart page breaks."""
     
     def __init__(self, candidate_name: str):
         super().__init__()
@@ -75,10 +72,30 @@ class PortfolioPDF(FPDF):
         self.set_font("DejaVu", "I", 8)
         self.set_text_color(100, 100, 100)
         self.cell(0, 10, f"Page {self.page_no()}", align="C")
+    
+    def check_page_break(self, height_needed: float):
+        """
+        Check if there's enough space for content.
+        If not, add a new page.
+        
+        Args:
+            height_needed: Height in mm needed for next content
+        """
+        # Calculate available space
+        bottom_margin = self.b_margin
+        current_y = self.get_y()
+        page_height = self.h
+        available_space = page_height - bottom_margin - current_y
+        
+        # If not enough space, start new page
+        if available_space < height_needed:
+            self.add_page()
+            return True
+        return False
 
 
 # ---------------------------------------------------------------------------
-# Main generator - Pure text only
+# Main generator with improved page break logic
 # ---------------------------------------------------------------------------
 def generate_portfolio_pdf(
     portfolio_content: str,
@@ -86,9 +103,10 @@ def generate_portfolio_pdf(
     filename: str = "output/portfolios/portfolio.pdf"
 ) -> str:
     """
-    Generate detailed text-only portfolio PDF.
+    Generate detailed text-only portfolio PDF with smart page breaks.
     
     NO images, NO image placeholders - pure text content only.
+    Prevents text from being cut off at page boundaries.
     
     Args:
         portfolio_content: Full portfolio text with sections
@@ -123,6 +141,7 @@ def generate_portfolio_pdf(
         
         # Detect main title (first line or ALL CAPS)
         if pdf.page_no() == 1 and pdf.get_y() < 30:
+            pdf.check_page_break(15)  # Ensure space for title
             pdf.set_font("DejaVu", "B", 20)
             pdf.set_text_color(0, 51, 102)  # Dark blue
             pdf.cell(usable_width, 10, stripped, align="C")
@@ -131,6 +150,9 @@ def generate_portfolio_pdf(
         
         # Detect section headers (ALL CAPS)
         if stripped.isupper() and len(stripped) > 3:
+            # CRITICAL: Check if there's space for header + at least 2 lines of content
+            pdf.check_page_break(20)  # Header + some content space
+            
             pdf.ln(6)
             pdf.set_font("DejaVu", "B", 14)
             pdf.set_text_color(0, 51, 102)
@@ -145,6 +167,9 @@ def generate_portfolio_pdf(
         
         # Detect subsection headers (ends with colon)
         if stripped.endswith(":") and not stripped.startswith(("-", "*", "•")):
+            # Check space for subsection header
+            pdf.check_page_break(15)
+            
             pdf.ln(3)
             pdf.set_font("DejaVu", "B", 11)
             pdf.set_text_color(0, 0, 0)
@@ -155,6 +180,15 @@ def generate_portfolio_pdf(
         # Detect bullet points
         if stripped.startswith(("-", "*", "•")):
             bullet_text = stripped.lstrip("-*• ").strip()
+            
+            # Estimate height needed for this bullet
+            # Approximate: each 100 characters = 1 line at width ~180
+            chars_per_line = 100
+            estimated_lines = max(1, len(bullet_text) // chars_per_line + 1)
+            height_needed = estimated_lines * 5 + 2
+            
+            pdf.check_page_break(height_needed)
+            
             pdf.set_font("DejaVu", "", 10)
             pdf.set_text_color(0, 0, 0)
             pdf.set_x(20)  # Indent
@@ -162,6 +196,13 @@ def generate_portfolio_pdf(
             continue
         
         # Regular paragraph text
+        # Estimate height needed for paragraph
+        chars_per_line = 100
+        estimated_lines = max(1, len(stripped) // chars_per_line + 1)
+        height_needed = estimated_lines * 5 + 2
+        
+        pdf.check_page_break(height_needed)
+        
         pdf.set_font("DejaVu", "", 10)
         pdf.set_text_color(0, 0, 0)
         pdf.multi_cell(usable_width, 5, stripped)
